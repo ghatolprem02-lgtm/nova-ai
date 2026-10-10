@@ -1,0 +1,907 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08090d">
+  <title>NOVA AI</title>
+  <meta name="description" content="NOVA AI — one space for ideas, creativity, and code.">
+  <style>
+    :root {
+      --bg: #08090d;
+      --panel: #101116;
+      --panel2: #171820;
+      --line: #272832;
+      --text: #f4f4f8;
+      --muted: #9293a2;
+      --accent: #a78bfa;
+      --accent2: #6d5dfc;
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      min-height: 100vh;
+    }
+
+    button, textarea, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 248px;
+      flex-shrink: 0;
+      background: #0d0e13;
+      border-right: 1px solid var(--line);
+      padding: 22px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 0 8px;
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #c4b5fd, #7357fa 65%, #4931b8);
+      color: white;
+      box-shadow: 0 0 25px #7658f533;
+    }
+
+    .brand-name {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .brand-sub {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      margin-top: 3px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      color: #777988;
+      letter-spacing: 1.8px;
+      font-weight: 700;
+      padding: 0 10px;
+      margin-bottom: 10px;
+    }
+
+    .nav-list { display: grid; gap: 5px; }
+
+    .nav-btn {
+      border: 1px solid transparent;
+      background: transparent;
+      color: #a8a9b8;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      text-align: left;
+      transition: .2s;
+    }
+
+    .nav-btn:hover {
+      background: #181922;
+      color: white;
+    }
+
+    .nav-btn.active {
+      background: #242035;
+      color: #d7ccff;
+      border-color: #44376b;
+    }
+
+    .nav-icon {
+      width: 22px;
+      text-align: center;
+      font-size: 17px;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      display: grid;
+      gap: 15px;
+    }
+
+    .status-card {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: linear-gradient(135deg, #171522, #101116);
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background: #e7b968;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .status-card p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      margin-bottom: 0;
+    }
+
+    .version {
+      color: #696b7a;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 72px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      gap: 15px;
+    }
+
+    .page-name {
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tag {
+      border: 1px solid #35313f;
+      background: #17151f;
+      color: #c6b9ff;
+      border-radius: 30px;
+      font-size: 11px;
+      padding: 7px 11px;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #29243c;
+      border: 1px solid #50416f;
+      font-weight: 700;
+      color: #d5caff;
+    }
+
+    .content {
+      width: 100%;
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 50px 30px 36px;
+      flex: 1;
+    }
+
+    .hero {
+      text-align: center;
+      margin: 15px auto 34px;
+      max-width: 650px;
+    }
+
+    .eyebrow {
+      color: #b6a4ff;
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      font-weight: 750;
+      margin-bottom: 17px;
+    }
+
+    h1 {
+      font-size: clamp(32px, 5vw, 49px);
+      line-height: 1.12;
+      letter-spacing: -1.7px;
+      margin: 0;
+      font-weight: 750;
+    }
+
+    .gradient {
+      background: linear-gradient(90deg, #c4b5fd, #8b9dff, #e0b7ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+      margin: 17px auto 0;
+      max-width: 480px;
+    }
+
+    .workspace {
+      max-width: 740px;
+      margin: 0 auto;
+    }
+
+    .mode-panel {
+      border: 1px solid var(--line);
+      background: #101116;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 20px 80px #00000025;
+    }
+
+    .mode-tabs {
+      display: flex;
+      overflow-x: auto;
+      gap: 5px;
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .mode-tab {
+      border: 1px solid transparent;
+      background: transparent;
+      color: #9394a3;
+      padding: 9px 13px;
+      border-radius: 10px;
+      white-space: nowrap;
+      font-size: 12px;
+    }
+
+    .mode-tab.active {
+      color: white;
+      background: #252133;
+      border-color: #43365f;
+    }
+
+    .prompt-area { padding: 18px; }
+
+    .prompt-label {
+      display: block;
+      color: #e1e0eb;
+      font-size: 13px;
+      font-weight: 650;
+      margin-bottom: 9px;
+    }
+
+    textarea, input, select {
+      width: 100%;
+      color: var(--text);
+      background: #0a0b10;
+      border: 1px solid #2b2c38;
+      border-radius: 12px;
+      outline: none;
+      padding: 14px;
+    }
+
+    textarea {
+      min-height: 115px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    textarea:focus, input:focus, select:focus {
+      border-color: #7965d6;
+      box-shadow: 0 0 0 3px #8c77ff14;
+    }
+
+    textarea::placeholder, input::placeholder { color: #676979; }
+
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 14px;
+      align-items: center;
+    }
+
+    .field {
+      flex: 1;
+      min-width: 125px;
+    }
+
+    .field label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 7px;
+    }
+
+    select { padding: 10px; font-size: 12px; }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 17px;
+    }
+
+    .small-note {
+      color: #858697;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .primary-btn {
+      border: 0;
+      background: linear-gradient(135deg, #a78bfa, #7560ed);
+      color: white;
+      font-weight: 700;
+      border-radius: 12px;
+      padding: 12px 19px;
+      transition: .2s;
+      box-shadow: 0 6px 22px #8066ed24;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.1);
+    }
+
+    .suggestions { margin-top: 26px; }
+
+    .suggestions-heading {
+      color: #999aaa;
+      font-size: 12px;
+      margin: 0 0 12px 2px;
+    }
+
+    .suggestion-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .suggestion {
+      text-align: left;
+      color: #dedee8;
+      background: #111218;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 15px;
+      transition: .2s;
+    }
+
+    .suggestion:hover {
+      background: #191821;
+      border-color: #574779;
+    }
+
+    .suggestion .s-icon {
+      display: block;
+      font-size: 20px;
+      margin-bottom: 11px;
+    }
+
+    .suggestion strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .suggestion span:last-child {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .output {
+      display: none;
+      margin-top: 18px;
+      padding: 20px;
+      border: 1px solid #393049;
+      border-radius: 16px;
+      background: #131119;
+      overflow-wrap: anywhere;
+    }
+
+    .output.show { display: block; }
+
+    .output h3 {
+      font-size: 14px;
+      margin: 0 0 12px;
+    }
+
+    .output p {
+      color: #d1d0dc;
+      font-size: 13px;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      margin: 0;
+    }
+
+    .output .output-note {
+      color: #a99bd8;
+      font-size: 11px;
+      margin-top: 14px;
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      padding: 17px 25px;
+      color: #6e7080;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .mobile-brand { display: none; }
+
+    @media (max-width: 760px) {
+      .sidebar { width: 70px; padding: 17px 8px; gap: 25px; }
+      .brand { justify-content: center; padding: 0; }
+      .brand-copy, .section-label, .nav-text,
+      .status-card, .version { display: none; }
+      .nav-btn { justify-content: center; padding: 13px 5px; }
+      .nav-icon { font-size: 20px; }
+      .sidebar-bottom { gap: 8px; }
+      .topbar { height: 62px; padding: 0 16px; }
+      .content { padding: 32px 15px 25px; }
+      .hero { margin-top: 15px; }
+      .hero p { font-size: 13px; }
+      .mode-tabs { padding: 9px; }
+      .mode-tab { padding: 9px 11px; }
+      .prompt-area { padding: 13px; }
+      .suggestion-grid { grid-template-columns: 1fr; }
+      .footer { padding: 15px; }
+      .tag { font-size: 10px; }
+    }
+
+    @media (max-width: 390px) {
+      .sidebar { width: 57px; }
+      .topbar { padding: 0 10px; }
+      .content { padding-left: 11px; padding-right: 11px; }
+      .actions { align-items: flex-start; flex-direction: column; }
+      .primary-btn { width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">N</div>
+      <div class="brand-copy">
+        <div class="brand-name">NOVA AI</div>
+        <div class="brand-sub">YOUR CREATIVE SPACE</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">WORKSPACE</div>
+      <nav class="nav-list">
+        <button class="nav-btn active" data-mode="chat">
+          <span class="nav-icon">✧</span><span class="nav-text">AI Chat</span>
+        </button>
+        <button class="nav-btn" data-mode="image">
+          <span class="nav-icon">▧</span><span class="nav-text">Image Studio</span>
+        </button>
+        <button class="nav-btn" data-mode="video">
+          <span class="nav-icon">▷</span><span class="nav-text">Video Studio</span>
+        </button>
+        <button class="nav-btn" data-mode="audio">
+          <span class="nav-icon">♫</span><span class="nav-text">Audio Studio</span>
+        </button>
+        <button class="nav-btn" data-mode="code">
+          <span class="nav-icon">{ }</span><span class="nav-text">Code Assistant</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="status-card">
+        <span class="status-dot"></span>
+        <strong style="font-size:12px">Prototype mode</strong>
+        <p>Connect an AI provider to enable real AI responses and generation.</p>
+      </div>
+      <div class="version">NOVA AI · VERSION 1.0</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="page-name" id="pageName">AI Chat</div>
+      <div class="top-right">
+        <span class="tag">✦ CREATIVE WORKSPACE</span>
+        <div class="avatar">N</div>
+      </div>
+    </header>
+
+    <div class="content">
+      <section class="hero">
+        <div class="eyebrow" id="eyebrow">WELCOME TO YOUR AI SPACE</div>
+        <h1 id="headline">Imagine it.<br><span class="gradient">Create with NOVA.</span></h1>
+        <p id="description">
+          One workspace for your questions, ideas, creativity, and code.
+          Your next big idea starts here.
+        </p>
+      </section>
+
+      <section class="workspace">
+        <div class="mode-panel">
+          <div class="mode-tabs">
+            <button class="mode-tab active" data-mode="chat">✧ Chat</button>
+            <button class="mode-tab" data-mode="image">▧ Image</button>
+            <button class="mode-tab" data-mode="video">▷ Video</button>
+            <button class="mode-tab" data-mode="audio">♫ Audio</button>
+            <button class="mode-tab" data-mode="code">{ } Code</button>
+          </div>
+
+          <div class="prompt-area">
+            <label class="prompt-label" for="prompt" id="promptLabel">
+              What would you like to explore?
+            </label>
+            <textarea id="prompt" placeholder="Ask a question, brainstorm an idea, or start something new..."></textarea>
+
+            <div class="options" id="options" style="display:none">
+              <div class="field" id="qualityField">
+                <label for="quality">Style / quality</label>
+                <select id="quality">
+                  <option>Standard</option>
+                  <option>Detailed</option>
+                  <option>Cinematic</option>
+                  <option>Creative</option>
+                </select>
+              </div>
+              <div class="field" id="formatField">
+                <label for="format">Format</label>
+                <select id="format">
+                  <option>Square</option>
+                  <option>Landscape</option>
+                  <option>Portrait</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="actions">
+              <span class="small-note" id="hint">
+                Your ideas, all in one place.
+              </span>
+              <button class="primary-btn" id="submitBtn">Start exploring ↗</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="output" id="output" aria-live="polite">
+          <h3 id="outputTitle">NOVA AI</h3>
+          <p id="outputText"></p>
+          <div class="output-note" id="outputNote"></div>
+        </div>
+
+        <div class="suggestions">
+          <p class="suggestions-heading">NEED SOME INSPIRATION?</p>
+          <div class="suggestion-grid" id="suggestionGrid">
+            <button class="suggestion" data-prompt="Explain artificial intelligence in simple words with examples.">
+              <span class="s-icon">✧</span>
+              <strong>Learn something new</strong>
+              <span>Explore a topic and understand it step by step.</span>
+            </button>
+            <button class="suggestion" data-prompt="Give me five original creative project ideas I can build as a beginner.">
+              <span class="s-icon">◇</span>
+              <strong>Brainstorm ideas</strong>
+              <span>Turn a small thought into an exciting project.</span>
+            </button>
+            <button class="suggestion" data-prompt="Write a beginner-friendly HTML page with a dark theme and clear comments.">
+              <span class="s-icon">⌘</span>
+              <strong>Build something</strong>
+              <span>Start a website or learn how code works.</span>
+            </button>
+            <button class="suggestion" data-prompt="Create a detailed concept for a futuristic city at night with violet lights and floating buildings.">
+              <span class="s-icon">▧</span>
+              <strong>Imagine a new world</strong>
+              <span>Describe a scene for an image or video concept.</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="footer">
+      <span>✦ NOVA AI — Built for curious minds.</span>
+      <span>Prototype · No API connection yet</span>
+    </footer>
+  </main>
+</div>
+
+<script>
+  const modes = {
+    chat: {
+      name: "AI Chat",
+      eyebrow: "WELCOME TO YOUR AI SPACE",
+      headline: 'Imagine it.<br><span class="gradient">Create with NOVA.</span>',
+      description: "One workspace for your questions, ideas, creativity, and code. Your next big idea starts here.",
+      label: "What would you like to explore?",
+      placeholder: "Ask a question, brainstorm an idea, or start something new...",
+      button: "Start exploring ↗",
+      hint: "Your ideas, all in one place.",
+      demo: "chat"
+    },
+    image: {
+      name: "Image Studio",
+      eyebrow: "YOUR VISUAL IDEAS START HERE",
+      headline: 'Dream it.<br><span class="gradient">Picture it.</span>',
+      description: "Describe a visual concept and plan your next creative image.",
+      label: "Describe the image you imagine",
+      placeholder: "A futuristic city at night, violet neon lights, cinematic atmosphere...",
+      button: "Create concept ↗",
+      hint: "Image generation needs an AI provider.",
+      demo: "image"
+    },
+    video: {
+      name: "Video Studio",
+      eyebrow: "TURN IDEAS INTO STORIES",
+      headline: 'Think in motion.<br><span class="gradient">Tell your story.</span>',
+      description: "Plan scenes, camera movements, and visual stories for your next video.",
+      label: "Describe your video",
+      placeholder: "A cinematic aerial shot over a futuristic city at sunset...",
+      button: "Plan video ↗",
+      hint: "Video generation needs a compatible AI service.",
+      demo: "video"
+    },
+    audio: {
+      name: "Audio Studio",
+      eyebrow: "FIND YOUR SOUND",
+      headline: 'Hear the idea.<br><span class="gradient">Shape the sound.</span>',
+      description: "Plan audio concepts, soundtracks, narration, and sound effects.",
+      label: "Describe the audio you want",
+      placeholder: "A calm futuristic ambient soundtrack with soft synths...",
+      button: "Plan audio ↗",
+      hint: "Audio generation needs a compatible AI service.",
+      demo: "audio"
+    },
+    code: {
+      name: "Code Assistant",
+      eyebrow: "FROM IDEA TO IMPLEMENTATION",
+      headline: 'Build something.<br><span class="gradient">Make it real.</span>',
+      description: "Plan features, understand errors, and design your next coding project.",
+      label: "What do you want to build?",
+      placeholder: "Help me build a responsive website using HTML, CSS, and JavaScript...",
+      button: "Explore code ↗",
+      hint: "Real AI coding help needs an AI provider.",
+      demo: "code"
+    }
+  };
+
+  let currentMode = "chat";
+
+  const $ = id => document.getElementById(id);
+
+  function switchMode(mode) {
+    if (!modes[mode]) return;
+    currentMode = mode;
+    const data = modes[mode];
+
+    document.querySelectorAll("[data-mode]").forEach(button => {
+      button.classList.toggle("active", button.dataset.mode === mode);
+    });
+
+    $("pageName").textContent = data.name;
+    $("eyebrow").textContent = data.eyebrow;
+    $("headline").innerHTML = data.headline;
+    $("description").textContent = data.description;
+    $("promptLabel").textContent = data.label;
+    $("prompt").placeholder = data.placeholder;
+    $("submitBtn").textContent = data.button;
+    $("hint").textContent = data.hint;
+
+    $("options").style.display =
+      ["image", "video", "audio"].includes(mode) ? "flex" : "none";
+
+    $("qualityField").style.display = mode === "audio" ? "none" : "block";
+    $("formatField").style.display = mode === "image" ? "block" : "none";
+
+    $("output").classList.remove("show");
+    $("prompt").value = "";
+
+    document.querySelectorAll(".suggestion").forEach((button, i) => {
+      const suggestions = {
+        chat: [
+          ["✧", "Learn something new", "Explore a topic and understand it step by step."],
+          ["◇", "Brainstorm ideas", "Turn a small thought into an exciting project."],
+          ["⌘", "Build something", "Start a website or learn how code works."],
+          ["▧", "Imagine a new world", "Describe a scene for an image or video concept."]
+        ],
+        image: [
+          ["▧", "Fantasy landscape", "Imagine a magical world."],
+          ["✦", "Product concept", "Describe a futuristic product image."],
+          ["◈", "Character design", "Create a character description."],
+          ["☼", "Cinematic scene", "Explore lighting and composition."]
+        ],
+        video: [
+          ["▷", "Cinematic opening", "Plan a compelling opening shot."],
+          ["◈", "Travel sequence", "Design a sequence of locations."],
+          ["✦", "Product reveal", "Plan a dramatic product introduction."],
+          ["☼", "Short film", "Develop a short visual story."]
+        ],
+        audio: [
+          ["♫", "Ambient soundtrack", "Plan a relaxing soundscape."],
+          ["◈", "Game sound effects", "Design a set of game sounds."],
+          ["✦", "Narration", "Plan a clear voice-over."],
+          ["☼", "Music concept", "Describe an original musical direction."]
+        ],
+        code: [
+          ["⌘", "Build a website", "Plan a responsive web app."],
+          ["◇", "Fix an error", "Describe a coding issue."],
+          ["✦", "Learn JavaScript", "Explore programming basics."],
+          ["▧", "Create a tool", "Plan a useful small application."]
+        ]
+      };
+
+      const item = suggestions[mode][i];
+      button.querySelector(".s-icon").textContent = item[0];
+      button.querySelector("strong").textContent = item[1];
+      button.querySelector("span:last-child").textContent = item[2];
+    });
+  }
+
+  document.querySelectorAll("[data-mode]").forEach(button => {
+    button.addEventListener("click", () => switchMode(button.dataset.mode));
+  });
+
+  document.querySelectorAll(".suggestion").forEach(button => {
+    button.addEventListener("click", () => {
+      const prompts = {
+        chat: [
+          "Explain artificial intelligence in simple words with examples.",
+          "Give me five original creative project ideas I can build as a beginner.",
+          "Write a beginner-friendly HTML page with a dark theme and clear comments.",
+          "Create a detailed concept for a futuristic city at night with violet lights and floating buildings."
+        ],
+        image: [
+          "Describe a fantasy landscape with glowing mountains and a violet sky.",
+          "Develop a visual concept for a futuristic product advertisement.",
+          "Design an original character with a detailed outfit and setting.",
+          "Describe a cinematic scene with dramatic lighting and rich colors."
+        ],
+        video: [
+          "Plan a cinematic opening shot for a futuristic short film.",
+          "Plan a travel video sequence through beautiful landscapes.",
+          "Create a shot-by-shot concept for a product reveal.",
+          "Outline a short film told through five visual scenes."
+        ],
+        audio: [
+          "Plan a calm futuristic ambient soundtrack with soft synths.",
+          "Describe five sound effects for a futuristic adventure game.",
+          "Write a voice-over concept for a short educational video.",
+          "Develop an original musical concept with mood, tempo, and instruments."
+        ],
+        code: [
+          "Help me build a responsive website using HTML, CSS, and JavaScript.",
+          "Help me understand how to debug a JavaScript error.",
+          "Teach me JavaScript basics with simple examples.",
+          "Plan a useful beginner-friendly web application."
+        ]
+      };
+      const items = prompts[currentMode];
+      $("prompt").value = items[
+        Array.from(button.parentElement.children).indexOf(button)
+      ];
+      $("prompt").focus();
+    });
+  });
+
+  function escapeHTML(value) {
+    return value.replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    })[char]);
+  }
+
+  function showOutput(title, message, note) {
+    $("outputTitle").textContent = title;
+    $("outputText").textContent = message;
+    $("outputNote").textContent = note;
+    $("output").classList.add("show");
+    $("output").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  $("submitBtn").addEventListener("click", () => {
+    const prompt = $("prompt").value.trim();
+
+    if (!prompt) {
+      $("prompt").focus();
+      $("prompt").placeholder = "Type your idea here first...";
+      return;
+    }
+
+    const safePrompt = escapeHTML(prompt);
+    const mode = currentMode;
+
+    if (mode === "chat") {
+      showOutput(
+        "Your message is ready",
+        "You entered: " + prompt +
+        "\n\nThis prototype does not have an AI model connected yet. Once you connect a real AI service, NOVA AI can send your question to that service and display its response.",
+        "Demo interface only — no real AI response was generated."
+      );
+    } else if (mode === "image") {
+      showOutput(
+        "Image concept",
+        "PROMPT\n" + prompt +
+        "\n\nSTYLE\n" + $("quality").value +
+        "\n\nFORMAT\n" + $("format").value +
+        "\n\nThis is your image-generation brief. Connect an image-generation service to generate an actual image.",
+        "No image was generated."
+      );
+    } else if (mode === "video") {
+      showOutput(
+        "Video concept",
+        "VIDEO BRIEF\n" + prompt +
+        "\n\nSTYLE\n" + $("quality").value +
+        "\n\nSuggested next steps:\n1. Define the opening shot.\n2. Plan the scene sequence.\n3. Describe camera movements.\n4. Choose a compatible video-generation service.",
+        "No video was generated."
+      );
+    } else if (mode === "audio") {
+      showOutput(
+        "Audio concept",
+        "AUDIO BRIEF\n" + prompt +
+        "\n\nSTYLE\n" + $("quality").value +
+        "\n\nNext, define the mood, tempo, instruments, and duration. Connect an audio-generation service to create actual sound.",
+        "No audio was generated."
+      );
+    } else if (mode === "code") {
+      showOutput(
+        "Code project brief",
+        "YOUR REQUEST\n" + prompt +
+        "\n\nA useful starting workflow:\n1. Break the project into small features.\n2. Build the HTML structure.\n3. Style it with CSS.\n4. Add JavaScript interactions.\n5. Test it on mobile and desktop.\n\nConnect an AI model to receive actual code assistance.",
+        "Demo interface only — no AI model is connected."
+      );
+    }
+  });
+
+  $("prompt").addEventListener("keydown", event => {
+    if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+      $("submitBtn").click();
+    }
+  });
+</script>
+</body>
+</html>
